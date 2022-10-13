@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<style>
+table,th,td {
+  border : 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+body{
+  background-color: beige;
+}
+</style>
+<body>
+
+<h1>The XMLHttpRequest Object</h1>
+
+<button type="button" onclick="loadDoc()">Get All my Conatcts</button>
+
+
+<table id="demo1"></table>
+
+<br><br>
+
+<label for="tel_number">Telephone Number:</label>
+<input type="number" id="fname" name="fname"><br>
+
+<button onclick="SearchContactByNumber()">Display Record</button>
+<div id="error"></div>
+<table id="demo2"></table>
+<br>
+<br>
+
+<label for="tel_number">Profession:</label>
+<input type="text" id="multiple" name="fname"><br>
+
+<button onclick="displaymultiple()">Display All that applies</button>
+<div id="error1"></div>
+<table id="demo3"></table>
+
+
+<script>
+
+function SearchContactByNumber(){
+
+  var xml = new XMLHttpRequest();
+  var name  = document.getElementById('fname').value; 
+  xml.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var i;
+        var xmlDoc = this.responseXML;
+        var table="<tr><th>Name</th><th>Profession</th><th>Contact Mobile Number</th><th>Telephone Number</th></tr>";
+        var x = xmlDoc.getElementsByTagName("CONTACT");
+
+        for (i = 0; i <x.length; i++) { 
+          if(x[i].getElementsByTagName("TEL_NUMBER")[0].childNodes[0].nodeValue === name){
+            table += "<tr><td>" +
+            x[i].getElementsByTagName("CONTACT_NAME")[0].childNodes[0].nodeValue +"</td><td>"+
+            x[i].getElementsByTagName("CONTACT_PROFESSION")[0].childNodes[0].nodeValue +"</td><td>" + 
+            x[i].getElementsByTagName("CONTACT_MOBILE_NUMBER")[0].childNodes[0].nodeValue +"</td><td>" +
+            x[i].getElementsByTagName("TEL_NUMBER")[0].childNodes[0].nodeValue + "</td></tr>";
+          } 
+        }
+
+      if(table == "<tr><th>Name</th><th>Profession</th><th>Contact Mobile Number</th><th>Telephone Number</th></tr>"){
+        document.getElementById("error").innerHTML = "No Records are found";
+      }
+      else{
+        document.getElementById("demo2").innerHTML = table;
+      }     
+  }
+  };
+  xml.open("GET", "tel_dir.xml", true);
+  xml.send();
+
+  console.log(document.getElementById('fname').value);
+  
+}
+
+function displaymultiple(){
+  var xml = new XMLHttpRequest();
+  var name  = document.getElementById('multiple').value; 
+  xml.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var i;
+        var xmlDoc = this.responseXML;
+        var table="<tr><th>Name</th><th>Profession</th><th>Contact Mobile Number</th><th>Telephone Number</th></tr>";
+        var x = xmlDoc.getElementsByTagName("CONTACT");
+
+        for (i = 0; i <x.length; i++) { 
+          if(x[i].getElementsByTagName("CONTACT_PROFESSION")[0].childNodes[0].nodeValue === name){
+            table += "<tr><td>" +
+            x[i].getElementsByTagName("CONTACT_NAME")[0].childNodes[0].nodeValue +"</td><td>"+
+            x[i].getElementsByTagName("CONTACT_PROFESSION")[0].childNodes[0].nodeValue +"</td><td>" + 
+            x[i].getElementsByTagName("CONTACT_MOBILE_NUMBER")[0].childNodes[0].nodeValue +"</td><td>" +
+            x[i].getElementsByTagName("TEL_NUMBER")[0].childNodes[0].nodeValue + "</td></tr>";
+          } 
+        }
+
+      if(table == "<tr><th>Name</th><th>Profession</th><th>Contact Mobile Number</th><th>Telephone Number</th></tr>"){
+        document.getElementById("error1").innerHTML = "No Records are found";
+      }
+      else{
+        document.getElementById("demo3").innerHTML = table;
+      }     
+  }
+  };
+  xml.open("GET", "tel_dir.xml", true);
+  xml.send();
+
+  console.log(document.getElementById('fname').value);
+  
+}
+
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      myFunction(this);
+    }
+  };
+  xhttp.open("GET", "tel_dir.xml", true);
+  xhttp.send();
+}
+
+function myFunction(xml) {
+  
+  var i;
+  var xmlDoc = xml.responseXML;
+  var table="<tr><th>Name</th><th>Profession</th><th>Contact Mobile Number</th><th>Telephone Number</th></tr>";
+  var x = xmlDoc.getElementsByTagName("CONTACT");
+  console.log(x);
+  for (i = 0; i <x.length; i++) { 
+    table += "<tr><td>" +
+    x[i].getElementsByTagName("CONTACT_NAME")[0].childNodes[0].nodeValue +"</td><td>"+
+    x[i].getElementsByTagName("CONTACT_PROFESSION")[0].childNodes[0].nodeValue +"</td><td>" + x[i].getElementsByTagName("CONTACT_MOBILE_NUMBER")[0].childNodes[0].nodeValue +"</td><td>" + 
+    x[i].getElementsByTagName("TEL_NUMBER")[0].childNodes[0].nodeValue + "</td></tr>";
+  }
+  document.getElementById("demo1").innerHTML = table;
+}
+</script>
+
+</body>
+</html>
